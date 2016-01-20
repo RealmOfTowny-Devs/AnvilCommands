@@ -1,0 +1,40 @@
+<!-- AnvilStringCommand build file -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.drkmatr1984</groupId>
+    <artifactId>anvilstringcommand-parent</artifactId>
+    <!-- Artifact ID doesn't matter for anything but the final product
+               At least, it doesn't matter externally to this setup -->
+    <packaging>pom</packaging>
+    <!-- Packaging? POM -->
+    <version>parent</version>
+    <name>anvilstringcommand Parent</name>
+
+    <!-- Properties -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <modules>
+      <!-- <module>v18r1</module> -->
+      <module>common</module>
+      <module>anvilstringcommand</module>
+      <module>v18r3</module>
+      <module>v18r2</module>
+    </modules>
+    
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+			<id>md_5-repo</id>
+			<url>http://repo.md-5.net/content/groups/public/</url>
+		  </repository>
+    </repositories>
+</project>

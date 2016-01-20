@@ -1,0 +1,10 @@
+name: AnvilStringCommand
+version: 0.1
+main: me.drkmatr1984.anvilstringcommand.AnvilStringCommand
+description: Opens an AnvilGUI to get String input
+commands:
+  anvil:
+    description: Opens an AnvilGUI to get String input
+    aliases: [anvil]
+    usage: |
+        /anvil - Opens an AnvilGUI to get String input
