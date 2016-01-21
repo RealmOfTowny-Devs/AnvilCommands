@@ -48,6 +48,8 @@ config:
   commands:
     newtown:
       ##Creates a new command called /newtown
+      permission: anvilcommands.newtown
+      ##permission to open this Anvil GUI
       slot1:
         material: NAME_TAG
         datavalue: 0
@@ -79,9 +81,9 @@ config:
         - 't new %userinput%'
         - '[close]'
     renameme:
-    ## Creates a new command called /renameme
-    ## This example is unique in that none of the buttons
-    ## Cause the GUI to close
+      ## Creates a new command called /renameme
+      permission: anvilcommands.renameme
+      ##permission to open this Anvil GUI  
       slot1:
         material: PAPER
         datavalue: 0
@@ -101,13 +103,7 @@ config:
         command:
         - '[nothing]'
       result:
-        material: PAPER
-        datavalue: 0
-        displayname: "&f<&eNickName&f>"
-        lore:
-        - "&7&oClick Any of these buttons"
-        - "&7&oWhen Done. Press Esc to close"
         command:
-        - "nick %userinput%"
+        - "!nick %userinput%"
         ## Executes as the player as OP
         - '[close]'

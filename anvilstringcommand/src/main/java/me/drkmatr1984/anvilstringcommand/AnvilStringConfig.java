@@ -38,19 +38,25 @@ public class AnvilStringConfig{
 		cs = f.getConfigurationSection("config.commands");
 	}
 	
-	public HashMap<AnvilSlot, HashMap<ItemStack, List<String>>> LoadButtonsfromConfig(String commands) {
+	public HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> LoadButtonsfromConfig(String commands) {
 		file = new File(this.plugin.getDataFolder(), "config.yml");
 		f = YamlConfiguration.loadConfiguration(file);		
 		cs = f.getConfigurationSection("config.commands");
+		String permission = "anvilcommands.default";
 		String material = "APPLE";
 		short datavalue = -1;
 		String displayname = "&6Apple";
 		List<String> lore = new ArrayList<String>();
 		List<String> command = new ArrayList<String>();
-		HashMap<AnvilSlot, HashMap<ItemStack, List<String>>> buttonSlots = new HashMap<AnvilSlot, HashMap<ItemStack, List<String>>>();
+		HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> buttonSlots = new HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>>();
+		HashMap<String,HashMap<ItemStack, List<String>>> permSlots = new HashMap<String,HashMap<ItemStack, List<String>>>();
 		HashMap<ItemStack, List<String>> buttons = new HashMap<ItemStack, List<String>>();
 		for(String s : cs.getKeys(false)){
 		    if(s.equals(commands)){
+		    	//permission
+		    	String perm = "config.commands." + s + ".permission";
+		    	if(f.getString(perm)!=null)
+		    		permission = f.getString(perm);
 		    	//Slot1
 		    	String slot1 = "config.commands." + s + ".slot1";
 		    	if(f.getString(slot1 + ".material")!=null)
@@ -71,7 +77,9 @@ public class AnvilStringConfig{
 		    		command = f.getStringList(slot1 + ".command");
 		    	buttons = new HashMap<ItemStack, List<String>>();
 		    	buttons.put(assembleButton(Material.getMaterial(material), datavalue, displayname, lore), command);
-		    	buttonSlots.put(AnvilSlot.INPUT_LEFT, buttons);
+		    	permSlots = new HashMap<String,HashMap<ItemStack, List<String>>>();
+		    	permSlots.put(permission, buttons);
+		    	buttonSlots.put(AnvilSlot.INPUT_LEFT, permSlots);
 		    	//Slot2
 		    	String slot2 = "config.commands." + s + ".slot2";
 		    	if(f.getString(slot2 + ".material")!=null)
@@ -92,28 +100,19 @@ public class AnvilStringConfig{
 		    		command = f.getStringList(slot2 + ".command");
 		    	buttons = new HashMap<ItemStack, List<String>>();
 		    	buttons.put(assembleButton(Material.getMaterial(material), datavalue, displayname, lore), command);
-		    	buttonSlots.put(AnvilSlot.INPUT_RIGHT, buttons);
+		    	permSlots = new HashMap<String,HashMap<ItemStack, List<String>>>();
+		    	permSlots.put(permission, buttons);
+		    	buttonSlots.put(AnvilSlot.INPUT_RIGHT, permSlots);
 		    	//Result
 		    	String result = "config.commands." + s + ".result";
-		    	if(f.getString(result + ".material")!=null)
-		    		material = f.getString(result + ".material");
-		    	if((short)f.getInt(result + ".datavalue") != -1)
-		    		datavalue = (short) f.getInt(result + ".datavalue");
-		    	if(f.getString(result + ".displayname")!=null)
-		    		displayname = formatColor(f.getString(result + ".displayname"));
-		    	if(f.getStringList(result + ".lore")!=null){
-		    		List<String> loretemp = new ArrayList<String>();
-		    		lore = f.getStringList(result + ".lore");
-		    		for(String l : lore){
-		    			loretemp.add(formatColor(l));
-		    		}
-		    		lore = loretemp;
-		    	}
+		    	ItemStack stack = new ItemStack(Material.NAME_TAG, 1, (short)0);
 		    	if(f.getStringList(result + ".command")!=null)
 		    		command = f.getStringList(result + ".command");
 		    	buttons = new HashMap<ItemStack, List<String>>();
-		    	buttons.put(assembleButton(Material.getMaterial(material), datavalue, displayname, lore), command);
-		    	buttonSlots.put(AnvilSlot.OUTPUT, buttons);
+		    	buttons.put(stack, command);
+		    	permSlots = new HashMap<String,HashMap<ItemStack, List<String>>>();
+		    	permSlots.put(permission, buttons);
+		    	buttonSlots.put(AnvilSlot.OUTPUT, permSlots);
 		    	
 		    	return buttonSlots;
 		    }
