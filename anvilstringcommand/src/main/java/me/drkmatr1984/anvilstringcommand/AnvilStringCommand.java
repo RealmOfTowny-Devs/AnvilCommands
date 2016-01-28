@@ -17,12 +17,14 @@ import org.bukkit.command.CommandSender;
 public class AnvilStringCommand extends JavaPlugin
 {
     public static AnvilStringCommand plugin;
+    public boolean anvilPatch = false;
     AnvilStringConfig config;
     private Logger log = getLogger();
     //private PluginManager pm = getServer().getPluginManager(); //Used to register Events/Listeners
     private static CommandMap cmap;
     public String version;
     public String clazzName;
+    public String patchName;
   
   public void onEnable()
   {
@@ -32,7 +34,8 @@ public class AnvilStringCommand extends JavaPlugin
 	  RegisterCommands();
 	  if(!RegisterAnvilGUI()){
 		  this.log.log(Level.WARNING, "Plugin could not be loaded, version {" + version + "} is not supported!");
-	  }  
+	  }
+	  anvilPatch = anvilPatch();
 	  // getCommand("help").setExecutor(new AnvilCommandHelp());	
 	  this.log.info("AnvilStringCommand enabled!");
   }
@@ -88,6 +91,7 @@ public class AnvilStringCommand extends JavaPlugin
 			this.log.log(Level.WARNING, "Plugin could not be loaded, is this even Spigot or CraftBukkit?");
 			this.setEnabled(false);
 	  }
+      
   }
   
   private boolean RegisterAnvilGUI(){
@@ -97,9 +101,11 @@ public class AnvilStringCommand extends JavaPlugin
 			if (AnvilGUI.class.isAssignableFrom(clazz)) {
 				return true;
 			}
+			this.getLogger().log(Level.WARNING, "Plugin could not be loaded, version {" + version + "} is not supported yet!");
 			this.setEnabled(false);
 			return false;
 		} catch (ClassNotFoundException e) {
+			this.getLogger().log(Level.WARNING, "Plugin could not be loaded, version {" + version + "} is not supported yet!");
 			this.setEnabled(false);
 			return false;
 		}	  
@@ -113,4 +119,22 @@ public class AnvilStringCommand extends JavaPlugin
 	return Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit.", "");
   }
   
+  private boolean anvilPatch(){
+	  if ((plugin.getServer().getPluginManager().getPlugin("AnvilPatch") == null) || (!plugin.getServer().getPluginManager().isPluginEnabled("AnvilPatch"))) {
+		  patchName = this.getClass().getPackage().getName() + "." + version + ".SAnvilPatcher";
+		  try {
+				Class<?> clazz = Class.forName(patchName);
+				if (AnvilPatcher.class.isAssignableFrom(clazz)) {
+					System.out.println("[AnvilStringCommand] AnvilPatch not found. Using built-in code to handle colors in GUI!");
+					return false;
+				}
+				this.setEnabled(false);
+				return false;
+			} catch (ClassNotFoundException e) {
+				this.setEnabled(false);
+				return false;
+			}		  
+	  }	  
+      return true;
+  }
 }

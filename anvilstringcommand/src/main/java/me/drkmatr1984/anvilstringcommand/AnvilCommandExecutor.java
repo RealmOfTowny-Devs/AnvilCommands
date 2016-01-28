@@ -17,18 +17,21 @@ import me.drkmatr1984.anvilstringcommand.AnvilGUI.AnvilSlot;
 
 public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 {   
-	AnvilStringCommand plugin;
-	AnvilStringConfig cfg;
-    String GUIinput = "";
+	
     final String close = "[close]";
     final String nothing = "[nothing]";
     final String variable = "%userinput%";
     final String userVariable = "%player%";
+    AnvilStringCommand plugin;
+	AnvilStringConfig cfg;
+    String GUIinput = "";
+    String noPerm = ChatColor.RED + "You do not have permission to open this GUI";
     Player p = null;
     
 	public AnvilCommandExecutor(AnvilStringCommand anvilStringCommand) {
 		this.plugin = anvilStringCommand;
 	}
+	
 	@Override
 	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args) {
 		try {
@@ -41,100 +44,122 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 						p = (Player)sender;
 			    		HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> buttons = new HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>>();
 				    	buttons = cfg.LoadButtonsfromConfig(s);
-			    		final String passThru = s;
-			    		Class<?> clazz = null;
-					    try{
-					    	clazz = Class.forName(plugin.clazzName);
-					    } catch (ClassNotFoundException e) {
-					    	sender.sendMessage(ChatColor.DARK_RED + "An Error has Occured");
-						    e.printStackTrace();
-					    	return false;
-					    }
-			    		AnvilGUI gui = (AnvilGUI)clazz.asSubclass(clazz).getConstructor(Player.class, JavaPlugin.class, AnvilClickEventHandler.class).newInstance(p, plugin, new AnvilGUI.AnvilClickEventHandler(){					
-			    		@Override
-			    		@EventHandler(priority=org.bukkit.event.EventPriority.HIGHEST)
-						public void onAnvilClick(AnvilClickEvent event) {
-							HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> buttons = new HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>>();
-							HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-							HashMap<ItemStack, List<String>> commandList = new HashMap<ItemStack, List<String>>();
-							buttons = cfg.LoadButtonsfromConfig(passThru);
-								commandList = new HashMap<ItemStack, List<String>>();
-								preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-								if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT){
-						    		preList = buttons.get(AnvilSlot.INPUT_LEFT);
-						    		for(String perms : preList.keySet()){
-						    			if(!perms.equals(null)){
-						    				commandList = preList.get(perms);						    						
-						    			}
-						    		}
-						    		doCommands(event, commandList);
-								}
-								commandList = new HashMap<ItemStack, List<String>>();
-								preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-						    	if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT){
-						    		preList = buttons.get(AnvilSlot.INPUT_RIGHT);
-						    		for(String perms : preList.keySet()){
-						    			if(!perms.equals(null)){
-						    				commandList = preList.get(perms);						    						
-						    			}
-						    		}
-						    		doCommands(event, commandList);
-								}
-						    	commandList = new HashMap<ItemStack, List<String>>();
-								preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-								if(event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT){
-									preList = buttons.get(AnvilSlot.OUTPUT);
-						    		for(String perms : preList.keySet()){
-						    			if(!perms.equals(null)){
-						    				commandList = preList.get(perms);						    						
-						    			}
-						    		}
-									doCommands(event, commandList);
-								}
-							}
-						});
-			    		HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-			    		HashMap<ItemStack, List<String>> itemList = new HashMap<ItemStack, List<String>>();
-			    		preList = buttons.get(AnvilSlot.INPUT_LEFT);
+				    	HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+				    	preList = buttons.get(AnvilSlot.INPUT_LEFT);
 			    		for(String perms : preList.keySet()){
 			    			if(!perms.equals(null)){
-			    				itemList = preList.get(perms);
-			    				for(ItemStack input : itemList.keySet()){
-						    		if(input!=null){
-						    			gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, input);
+			    				if(p.hasPermission(perms)){
+							    	final String passThru = s;
+						    		Class<?> clazz = null;
+								    try{
+								    	clazz = Class.forName(plugin.clazzName);
+								    } catch (ClassNotFoundException e) {
+								    	sender.sendMessage(ChatColor.DARK_RED + "An Error has Occured");
+									    e.printStackTrace();
+								    	return false;
+								    }
+								    if(!plugin.anvilPatch){
+									    Class<?> patch = null;
+									    try{
+									    	patch = Class.forName(plugin.patchName);
+									    } catch (ClassNotFoundException e) {
+									    	sender.sendMessage(ChatColor.DARK_RED + "An Error has Occured");
+										    e.printStackTrace();
+									    	return false;
+									    }
+									    AnvilPatcher patcher = (AnvilPatcher) patch.newInstance();
+									    patcher.patchGUI(p);
+								    }
+						    		AnvilGUI gui = (AnvilGUI)clazz.asSubclass(clazz).getConstructor(Player.class, JavaPlugin.class, AnvilClickEventHandler.class).newInstance(p, plugin, new AnvilGUI.AnvilClickEventHandler(){					
+						    		@Override
+						    		@EventHandler(priority=org.bukkit.event.EventPriority.HIGHEST)
+									public void onAnvilClick(AnvilClickEvent event) {
+										HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> buttons = new HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>>();
+										HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+										HashMap<ItemStack, List<String>> commandList = new HashMap<ItemStack, List<String>>();
+										buttons = cfg.LoadButtonsfromConfig(passThru);
+											commandList = new HashMap<ItemStack, List<String>>();
+											preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+											if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT){
+									    		preList = buttons.get(AnvilSlot.INPUT_LEFT);
+									    		for(String perms : preList.keySet()){
+									    			if(!perms.equals(null)){
+									    				commandList = preList.get(perms);						    						
+									    			}
+									    		}
+									    		doCommands(event, commandList);
+											}
+											commandList = new HashMap<ItemStack, List<String>>();
+											preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+									    	if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT){
+									    		preList = buttons.get(AnvilSlot.INPUT_RIGHT);
+									    		for(String perms : preList.keySet()){
+									    			if(!perms.equals(null)){
+									    				commandList = preList.get(perms);						    						
+									    			}
+									    		}
+									    		doCommands(event, commandList);
+											}
+									    	commandList = new HashMap<ItemStack, List<String>>();
+											preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+											if(event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT){
+												preList = buttons.get(AnvilSlot.OUTPUT);
+									    		for(String perms : preList.keySet()){
+									    			if(!perms.equals(null)){
+									    				commandList = preList.get(perms);						    						
+									    			}
+									    		}
+												doCommands(event, commandList);
+											}
+										}
+									});
+						    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+						    		HashMap<ItemStack, List<String>> itemList = new HashMap<ItemStack, List<String>>();
+						    		preList = buttons.get(AnvilSlot.INPUT_LEFT);
+						    		for(String perm : preList.keySet()){
+						    			if(!perm.equals(null)){
+						    				itemList = preList.get(perm);
+						    				for(ItemStack input : itemList.keySet()){
+									    		if(input!=null){
+									    			gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, input);
+									    		}
+									    	}
+						    			}
+						    		}	
+							    	
+						    		itemList = new HashMap<ItemStack, List<String>>();
+						    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+							    	preList = buttons.get(AnvilSlot.INPUT_RIGHT);
+							    	for(String perm : preList.keySet()){
+						    			if(!perm.equals(null)){
+						    				itemList = preList.get(perm);
+						    				for(ItemStack input : itemList.keySet()){
+									    		if(input!=null){
+									    			gui.setSlot(AnvilGUI.AnvilSlot.INPUT_RIGHT, input);
+									    		}
+									    	}
+						    			}
 						    		}
-						    	}
-			    			}
-			    		}	
-				    	
-			    		itemList = new HashMap<ItemStack, List<String>>();
-			    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-				    	preList = buttons.get(AnvilSlot.INPUT_RIGHT);
-				    	for(String perms : preList.keySet()){
-			    			if(!perms.equals(null)){
-			    				itemList = preList.get(perms);
-			    				for(ItemStack input : itemList.keySet()){
-						    		if(input!=null){
-						    			gui.setSlot(AnvilGUI.AnvilSlot.INPUT_RIGHT, input);
+							    	
+							    	itemList = new HashMap<ItemStack, List<String>>();
+						    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
+							    	preList = buttons.get(AnvilSlot.OUTPUT);
+							    	for(String perm : preList.keySet()){
+						    			if(!perm.equals(null)){
+						    				itemList = preList.get(perm);
+						    				for(ItemStack input : itemList.keySet()){
+									    		if(input!=null){
+									    			gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, input);
+									    		}
+									    	}
+						    			}
 						    		}
-						    	}
+						    	    gui.open();
+					    		}else{
+					    			p.sendMessage(noPerm);
+					    		}						    						
 			    			}
 			    		}
-				    	
-				    	itemList = new HashMap<ItemStack, List<String>>();
-			    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
-				    	preList = buttons.get(AnvilSlot.OUTPUT);
-				    	for(String perms : preList.keySet()){
-			    			if(!perms.equals(null)){
-			    				itemList = preList.get(perms);
-			    				for(ItemStack input : itemList.keySet()){
-						    		if(input!=null){
-						    			gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, input);
-						    		}
-						    	}
-			    			}
-			    		}
-			    	    gui.open();
 			    	  } 
 			    	  return true;
 			      }

@@ -17,23 +17,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.drkmatr1984.anvilstringcommand.AnvilGUI;
+import me.drkmatr1984.anvilstringcommand.v18r3.AnvilContainer;
 import java.util.HashMap;
 
 /**
  * Programmed by Tevin on 8/8/2015.
  */
 public class SAnvilGUI implements AnvilGUI{
-
-    private class AnvilContainer extends ContainerAnvil {
-        public AnvilContainer(EntityHuman entity) {
-            super(entity.inventory, entity.world,new BlockPosition(0, 0, 0), entity);
-        }
-
-        @Override
-        public boolean a(EntityHuman entityhuman) {
-            return true;
-        }
-    }
 
     private Player player;
 
