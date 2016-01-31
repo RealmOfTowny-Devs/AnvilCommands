@@ -136,6 +136,7 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 			if (msg instanceof PacketPlayInCustomPayload) {
 				final PacketPlayInCustomPayload msg0 = (PacketPlayInCustomPayload) msg;
+				//Bukkit.getServer().getLogger().info(((PacketPlayInCustomPayload) msg).b().c(Short.MAX_VALUE));
 				if (msg0.a().equals("MC|ItemName")) {
 					BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -167,18 +168,18 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 						builder.append(c);
 					}
 				}
-				value = ChatColor.translateAlternateColorCodes('&', builder.toString());
+				value = ChatColor.translateAlternateColorCodes('&', value);
 				if (value.length() <= 30) {
-					container.a(value);
+					container.a(value); //What was here
 					ItemStack itemStack0 = container.getSlot(0).getItem();
 					ItemStack itemStack1 = container.getSlot(1).getItem();
 					ItemStack itemStack2 = container.getSlot(2).getItem();
 					if (itemStack0 != null) {
-						if (StringUtils.isEmpty(value)) {
-							if (itemStack0.hasName()) {
-                        if(itemStack2 != null)								
+						if (StringUtils.isEmpty(value)) {    //if nothing is typed this sets the result to the
+							if (itemStack0.hasName()) {      //name of the item in slot1
+								if(itemStack2 != null)								
 									itemStack2.r();
-							}
+								}
 						} else if (!value.equals(itemStack0.getName())) {
 							if (itemStack2 == null) {
 								itemStack2 = itemStack0.cloneItemStack();
@@ -197,4 +198,26 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 			}
 		}
 	}
+	
+	/*private ItemStack setName(ItemStack stack){
+		NBTTagCompound compound = stack.getTag();
+		if (compound == null) {
+            compound = new NBTTagCompound();
+            stack.setTag(compound);
+            compound = stack.getTag();
+        }
+		if(!compound.hasKey("display")){
+			compound.set("display", new NBTTagCompound());
+		}
+		NBTTagCompound name = new NBTTagCompound();
+		name = compound.getCompound("display");
+		if(!name.hasKey("Name")){
+			name.set("Name", new NBTTagString());
+		}
+		NBTTagString dname = new NBTTagString("Click here to Finish");
+		name.set("Name", dname);
+		compound.set("display", name);
+		stack.setTag(compound);
+		return stack;
+	}*/
 }

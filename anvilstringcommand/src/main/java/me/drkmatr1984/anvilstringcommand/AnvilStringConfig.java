@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.ChatColor;
 
 import me.drkmatr1984.anvilstringcommand.AnvilGUI.AnvilSlot;
 
@@ -123,13 +124,10 @@ public class AnvilStringConfig{
 	public String formatColor(String words)
 	{
 		String temp = "";
-	    if(words!=null && words!=""){
-		  temp = words;
-	      temp = temp.replaceAll("&", "§");
-	    }else{
-	    	return words;
-	    }
-	    return temp;
+		if(words.contains("&")){
+			temp = ChatColor.translateAlternateColorCodes('&', words);
+		}
+		return temp;	
 	}
 	
 	public ItemStack assembleButton(Material mat, short dv, String name, List<String> lore){

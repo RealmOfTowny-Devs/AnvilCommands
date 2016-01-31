@@ -5,7 +5,7 @@ description: Opens an AnvilGUI to get String input
 softdepend: [PlaceholderAPI, AnvilPatch]
 commands:
   anvil:
-    description: Opens an AnvilGUI to get String input
+    description: Displays the help for the plugin
     aliases: [anvil]
     usage: |
-        /anvil - Opens an AnvilGUI to get String input
+        /anvil - Displays the help for the plugin
