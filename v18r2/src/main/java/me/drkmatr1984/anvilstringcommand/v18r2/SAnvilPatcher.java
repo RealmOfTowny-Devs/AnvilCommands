@@ -54,12 +54,6 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 		// TODO Auto-generated method stub
 		this.inject(player, true);
 	}
-	
-	@Override
-	public void unpatchGUI(Player player) {
-		// TODO Auto-generated method stub
-		this.inject(player, false);
-	}
 
 	/**
 	 * Gets the session of the entity player.
@@ -164,9 +158,9 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 
 		public void handleItemRename(PacketPlayInCustomPayload msg) {
 			AnvilContainer container = (AnvilContainer) this.playerHandle.activeContainer;
-
+			String value = "";
 			if (msg.b() != null && msg.b().readableBytes() >= 1) {
-				String value = msg.b().c(Short.MAX_VALUE);
+				value = msg.b().c(Short.MAX_VALUE);
 				StringBuilder builder = new StringBuilder();
 				for (char c : value.toCharArray()) {
 					if (c >= ' ' && c != '\u0000') {

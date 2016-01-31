@@ -43,9 +43,6 @@ public class AnvilStringCommand extends JavaPlugin
     public void onDisable()
     {
     	unRegisterCommands();
-    	if(!anvilPatch){
-    		unPatchAll();
-    	}
 	  	plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
   
@@ -138,29 +135,6 @@ public class AnvilStringCommand extends JavaPlugin
     		this.log.log(Level.WARNING, "Plugin could not unload commands, is this even Spigot or CraftBukkit?");
     	}
     }
-    
-    private boolean unPatchAll(){
-	    Class<?> patch = null;
-	    try{
-	    	patch = Class.forName(plugin.patchName);
-	    } catch (ClassNotFoundException e) {
-		    e.printStackTrace();
-		    return false;
-	    }
-	    AnvilPatcher patcher;
-		try {
-			patcher = (AnvilPatcher) patch.newInstance();
-			for(Player p : Bukkit.getServer().getOnlinePlayers())
-				patcher.unpatchGUI(p);
-			return true;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return false;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
   
     private boolean RegisterAnvilGUI()
     {

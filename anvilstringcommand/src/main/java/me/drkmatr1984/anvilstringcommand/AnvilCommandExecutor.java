@@ -3,6 +3,7 @@ package me.drkmatr1984.anvilstringcommand;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,13 +28,16 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
     String GUIinput = "";
     String noPerm = ChatColor.RED + "You do not have permission to open this GUI";
     Player p = null;
+    String adminPerm = "anvilcommands.admin";
+    String plugPrefix = ChatColor.GRAY + "["+ ChatColor.BLUE + "AnvilCommands" + ChatColor.GRAY + "]" + ChatColor.RESET + " ";
     
 	public AnvilCommandExecutor(AnvilStringCommand anvilStringCommand) {
 		this.plugin = anvilStringCommand;
 	}
 	
 	@Override
-	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(CommandSender sender1, Command cmd, String label, String[] args) {
+		final CommandSender sender = sender1;
 		if(sender instanceof Player){
 			p = (Player)sender;
 		}
@@ -45,23 +49,37 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 			if (cmd.getName().equalsIgnoreCase("anvilcommands")) {
 				if ((args.length == 0) || (args.equals(null)))
 				{
+					showHelp(sender);
 					return true;
 				}
 				if (args.length > 0) {
 			          String arg = args[0];
 			          if (arg.equalsIgnoreCase("help")) {
+			        	  showHelp(sender);
 			        	  return true;
 			          }
 			          if (arg.equalsIgnoreCase("reload")) {
-			        	  if (!sender.hasPermission("acs.admin")) {
-			        		  sender.sendMessage(noPerm);
+			        	  if (!sender.hasPermission(adminPerm)) {
+			        		  sender.sendMessage(plugPrefix + noPerm);
 				              return true;
 				          }
 				          this.plugin.getPluginLoader().disablePlugin(this.plugin);
 				          this.plugin.getPluginLoader().enablePlugin(plugin);
-				          sender.sendMessage("AnvilCommands has been Reloaded!");
+				          sender.sendMessage(plugPrefix + ChatColor.BLUE + "AnvilCommands has been Reloaded!");
 				          return true;
 				      }
+			          if (arg.equalsIgnoreCase("version")) {
+			        	  if (!(sender instanceof Player)) {
+				              Bukkit.getServer().getConsoleSender().sendMessage(plugPrefix + ChatColor.LIGHT_PURPLE + "Version" + ChatColor.GRAY + ": " + ChatColor.RESET + plugin.getDescription().getVersion());
+				              return true;
+				          }
+			        	  if (!sender.hasPermission(adminPerm)) {
+			        		  sender.sendMessage(plugPrefix + noPerm);
+				              return true;
+			        	  }
+				          sender.sendMessage(plugPrefix + ChatColor.LIGHT_PURPLE + "Version" + ChatColor.GRAY + ": " + ChatColor.RESET + plugin.getDescription().getVersion());
+				          return true;
+			          }
 				}
 			}else{
 				// AnvilGUI Commands Registered by Config
@@ -74,7 +92,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 					    	preList = buttons.get(AnvilSlot.INPUT_LEFT);
 				    		for(String perms : preList.keySet()){
 				    			if(!perms.equals(null)){
-				    				if(p.hasPermission(perms)){
+				    				if(p.hasPermission(perms) || p.hasPermission("anvilcommands.admin")){
 								    	final String passThru = s;
 							    		Class<?> clazz = null;
 									    try{
@@ -92,6 +110,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 											HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 											HashMap<ItemStack, List<String>> commandList = new HashMap<ItemStack, List<String>>();
 											buttons = cfg.LoadButtonsfromConfig(passThru);
+												//Load Left_Input Slot from Config
 												commandList = new HashMap<ItemStack, List<String>>();
 												preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 												if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT){
@@ -103,6 +122,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 										    		}
 										    		doCommands(event, commandList);
 												}
+												//Load Right_Input Slot from Config
 												commandList = new HashMap<ItemStack, List<String>>();
 												preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 										    	if(event.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT){
@@ -114,6 +134,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 										    		}
 										    		doCommands(event, commandList);
 												}
+										    	//Load Output Slot from Config
 										    	commandList = new HashMap<ItemStack, List<String>>();
 												preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 												if(event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT){
@@ -127,6 +148,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 												}
 											}
 										});
+							    		//Set Left_Input Slot
 							    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 							    		HashMap<ItemStack, List<String>> itemList = new HashMap<ItemStack, List<String>>();
 							    		preList = buttons.get(AnvilSlot.INPUT_LEFT);
@@ -140,7 +162,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 										    	}
 							    			}
 							    		}	
-								    	
+								    	//Set Right_Input Slot
 							    		itemList = new HashMap<ItemStack, List<String>>();
 							    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 								    	preList = buttons.get(AnvilSlot.INPUT_RIGHT);
@@ -154,7 +176,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 										    	}
 							    			}
 							    		}
-								    	
+								    	//Set Output_Slot
 								    	itemList = new HashMap<ItemStack, List<String>>();
 							    		preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
 								    	preList = buttons.get(AnvilSlot.OUTPUT);
@@ -168,9 +190,10 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 										    	}
 							    			}
 							    		}
+								    	//Open the GUI We just assembled
 							    	    gui.open();
 						    		}else{
-						    			p.sendMessage(noPerm);
+						    			p.sendMessage(plugPrefix + noPerm);
 						    		}						    						
 				    			}
 				    		}
@@ -187,6 +210,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 	}
 		
 	public void doCommands(AnvilClickEvent event, HashMap<ItemStack, List<String>> commandList){
+		//Loop thru buttons and do the commands assigned to them when clicked
 		for(ItemStack input : commandList.keySet()){
 			if(input != null){
     			for(String com : commandList.get(input)){
@@ -195,15 +219,24 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 							if(com == close){
 								event.setWillClose(true);
 								event.setWillDestroy(true);
+								continue;
 							}
 							if(com == nothing){
 								event.setWillClose(false);
 								event.setWillDestroy(false);
+								continue;
 							}
 						}
 						else{
+							//Do commands with RunLevels
 							RunLevel level = RunLevel.PLAYER;
-							GUIinput = event.getName();
+							if(event.getName()!=null){
+								GUIinput = event.getName();
+							}else{
+								event.setWillClose(false);
+								event.setWillDestroy(false);
+								break;
+							}
 							if(com.contains(variable)){
 								com = com.replace(variable, GUIinput);
 							}
@@ -219,28 +252,44 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 								}
 								com = com.substring(1);
 							}
-							switch(level){
-								case PLAYER:
-									p.performCommand(com);
-									break;
-								case OP:
-									if(!p.isOp()){
-										p.setOp(true);
+							if(event.getName()!=null){
+								switch(level){
+									case PLAYER:
 										p.performCommand(com);
-										p.setOp(false);
-									}else{
-										p.performCommand(com);
-									}
-									break;
-								case CONSOLE:
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), com);
-                                    break;
+										break;
+									case OP:
+										if(!p.isOp()){
+											p.setOp(true);
+											p.performCommand(com);
+											p.setOp(false);
+										}else{
+											p.performCommand(com);
+										}
+										break;
+									case CONSOLE:
+	                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), com);
+	                                    break;
+								}
 							}
 						}						
 					}
     			}
 			}
 		}
+	}
+	
+	public void showHelp(CommandSender sender){
+		if ((sender.hasPermission("anvilcommands.user") || sender.hasPermission("anvilcommands.admin")) && (sender instanceof Player)) {
+		sender.sendMessage(ChatColor.BLUE + "------  " + ChatColor.YELLOW + "AnvilCommands" + " Help  " + ChatColor.BLUE + "------" + ChatColor.RESET);
+        sender.sendMessage(ChatColor.AQUA + "/" + "AnvilCommands" + " " + ChatColor.RESET + "- Displays this Help");
+        sender.sendMessage(ChatColor.AQUA + "/" + "AnvilCommands help" + " " + ChatColor.RESET + "- Also Displays this Help");
+		}
+		if (sender.hasPermission("anvilcommands.admin") || !(sender instanceof Player)) {
+      	  sender.sendMessage(ChatColor.YELLOW + "--------" + ChatColor.RED + " Admin Help " + ChatColor.YELLOW + "--------" + ChatColor.RESET);
+          sender.sendMessage(ChatColor.RED + "/" + "AnvilCommands" + " version" + ChatColor.RESET + " - Shows the Plugin Version Number");
+          sender.sendMessage(ChatColor.RED + "/" + "AnvilCommands" + " reload" + ChatColor.RESET + " - Reloads the Plugin Config");
+        }
+        sender.sendMessage(ChatColor.BLUE + "---------------------------------" + ChatColor.RESET);
 	}
 	
 	public enum RunLevel{

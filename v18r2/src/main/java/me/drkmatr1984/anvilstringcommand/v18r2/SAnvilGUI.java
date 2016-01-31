@@ -124,20 +124,12 @@ public class SAnvilGUI implements AnvilGUI{
     }
 
     public void destroy() {
-    	if(player!=null && ((plugin.getServer().getPluginManager().getPlugin("AnvilPatch") == null) || (!plugin.getServer().getPluginManager().isPluginEnabled("AnvilPatch"))))
-    		unPatch(player);
         player = null;
         handler = null;
         items = null;
         HandlerList.unregisterAll(listener);
         listener = null;
     }
-    
-    private void unPatch(Player p){
-	    AnvilPatcher patcher;
-		patcher = (AnvilPatcher) new SAnvilPatcher();
-		patcher.unpatchGUI(p);
-	}
     
     private void tryPatch(Player p){
 	    AnvilPatcher patcher;
