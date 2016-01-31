@@ -54,6 +54,12 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 		// TODO Auto-generated method stub
 		this.inject(player, true);
 	}
+	
+	@Override
+	public void unpatchGUI(Player player) {
+		// TODO Auto-generated method stub
+		this.inject(player, false);
+	}
 
 	/**
 	 * Gets the session of the entity player.
@@ -136,7 +142,6 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 			if (msg instanceof PacketPlayInCustomPayload) {
 				final PacketPlayInCustomPayload msg0 = (PacketPlayInCustomPayload) msg;
-				//Bukkit.getServer().getLogger().info(((PacketPlayInCustomPayload) msg).b().c(Short.MAX_VALUE));
 				if (msg0.a().equals("MC|ItemName")) {
 					BukkitRunnable runnable = new BukkitRunnable() {
 
@@ -168,7 +173,7 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 						builder.append(c);
 					}
 				}
-				value = ChatColor.translateAlternateColorCodes('&', value);
+				value = ChatColor.translateAlternateColorCodes('&', builder.toString());
 				if (value.length() <= 30) {
 					container.a(value); //What was here
 					ItemStack itemStack0 = container.getSlot(0).getItem();
@@ -198,26 +203,4 @@ public class SAnvilPatcher implements AnvilPatcher, Listener {
 			}
 		}
 	}
-	
-	/*private ItemStack setName(ItemStack stack){
-		NBTTagCompound compound = stack.getTag();
-		if (compound == null) {
-            compound = new NBTTagCompound();
-            stack.setTag(compound);
-            compound = stack.getTag();
-        }
-		if(!compound.hasKey("display")){
-			compound.set("display", new NBTTagCompound());
-		}
-		NBTTagCompound name = new NBTTagCompound();
-		name = compound.getCompound("display");
-		if(!name.hasKey("Name")){
-			name.set("Name", new NBTTagString());
-		}
-		NBTTagString dname = new NBTTagString("Click here to Finish");
-		name.set("Name", dname);
-		compound.set("display", name);
-		stack.setTag(compound);
-		return stack;
-	}*/
 }

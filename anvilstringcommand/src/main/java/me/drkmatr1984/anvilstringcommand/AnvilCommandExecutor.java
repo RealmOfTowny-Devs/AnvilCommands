@@ -34,6 +34,9 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args) {
+		if(sender instanceof Player){
+			p = (Player)sender;
+		}
 		try {
 			cfg = new AnvilStringConfig(plugin);
 			cfg.loadConfig();
@@ -55,7 +58,7 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 				              return true;
 				          }
 				          this.plugin.getPluginLoader().disablePlugin(this.plugin);
-				          this.plugin.getPluginLoader().enablePlugin(this.plugin);
+				          this.plugin.getPluginLoader().enablePlugin(plugin);
 				          sender.sendMessage("AnvilCommands has been Reloaded!");
 				          return true;
 				      }
@@ -65,7 +68,6 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 				for(String s : cfg.cs.getKeys(false)){
 					if (cmd.getName().equalsIgnoreCase(s)) {
 						if(sender instanceof Player){
-							p = (Player)sender;
 				    		HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>> buttons = new HashMap<AnvilSlot, HashMap<String,HashMap<ItemStack, List<String>>>>();
 					    	buttons = cfg.LoadButtonsfromConfig(s);
 					    	HashMap<String,HashMap<ItemStack, List<String>>> preList = new HashMap<String,HashMap<ItemStack, List<String>>>();
@@ -81,20 +83,8 @@ public class AnvilCommandExecutor implements org.bukkit.command.CommandExecutor
 									    	sender.sendMessage(ChatColor.DARK_RED + "An Error has Occured");
 										    e.printStackTrace();
 									    	return false;
-									    }
-									    if(!plugin.anvilPatch){
-										    Class<?> patch = null;
-										    try{
-										    	patch = Class.forName(plugin.patchName);
-										    } catch (ClassNotFoundException e) {
-										    	sender.sendMessage(ChatColor.DARK_RED + "An Error has Occured");
-											    e.printStackTrace();
-										    	return false;
-										    }
-										    AnvilPatcher patcher = (AnvilPatcher) patch.newInstance();
-										    patcher.patchGUI(p);
-									    }
-							    		AnvilGUI gui = (AnvilGUI)clazz.asSubclass(clazz).getConstructor(Player.class, JavaPlugin.class, AnvilClickEventHandler.class).newInstance(p, plugin, new AnvilGUI.AnvilClickEventHandler(){					
+									    }								    
+							    		AnvilGUI gui = (AnvilGUI)clazz.asSubclass(clazz).getConstructor(Player.class, JavaPlugin.class, AnvilClickEventHandler.class).newInstance(p, plugin, new AnvilGUI.AnvilClickEventHandler(){
 							    		@Override
 							    		@EventHandler(priority=org.bukkit.event.EventPriority.HIGHEST)
 										public void onAnvilClick(AnvilClickEvent event) {

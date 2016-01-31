@@ -6,7 +6,7 @@ import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import me.drkmatr1984.anvilstringcommand.v18r3.AnvilContainer;
-
+import me.drkmatr1984.anvilstringcommand.v18r3.SAnvilPatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.drkmatr1984.anvilstringcommand.AnvilGUI;
+import me.drkmatr1984.anvilstringcommand.AnvilPatcher;
+
 import java.util.HashMap;
 
 /**
@@ -31,10 +33,12 @@ public class SAnvilGUI implements AnvilGUI{
     private HashMap<AnvilSlot, ItemStack> items = new HashMap<AnvilSlot, ItemStack>();
     private Inventory inv;
     private Listener listener;
+    private JavaPlugin plugin;
     
     public SAnvilGUI(Player player, JavaPlugin plugin, final AnvilClickEventHandler handler) {
         this.player = player;
         this.handler = handler;
+        this.plugin = plugin;
         this.listener = new Listener() {
             @EventHandler
             public void onInventoryClick(InventoryClickEvent event) {
@@ -64,20 +68,18 @@ public class SAnvilGUI implements AnvilGUI{
                     }
                 }
             }
-
             @EventHandler
             public void onInventoryClose(InventoryCloseEvent event) {
                 if (event.getPlayer() instanceof Player) {
                     Player player = (Player) event.getPlayer();
                     Inventory inv = event.getInventory();
-
                     if (inv.equals(SAnvilGUI.this.inv)) {
                         inv.clear();
                         destroy();
                     }
                 }
             }
-
+            
             @EventHandler
             public void onPlayerQuit(PlayerQuitEvent event) {
                 if (event.getPlayer().equals(getPlayer())) {
@@ -85,7 +87,9 @@ public class SAnvilGUI implements AnvilGUI{
                 }
             }
         };
-
+        if(!plugin.isEnabled()){
+        	plugin.getPluginLoader().enablePlugin(plugin); 	
+        }
         Bukkit.getPluginManager().registerEvents(listener, plugin); //Replace with instance of main class
     }
     
@@ -102,21 +106,11 @@ public class SAnvilGUI implements AnvilGUI{
         AnvilContainer container = new AnvilContainer(p);   
         //Set the items to the items from the inventory given
         inv = container.getBukkitView().getTopInventory();       
-        //String name = "";
-        for (AnvilSlot slot : items.keySet()) {
-        	if(!slot.equals(AnvilSlot.INPUT_LEFT))
-        	{
-        		inv.setItem(slot.getSlot(), items.get(slot));
-        	}else{
-        		inv.setItem(slot.getSlot(), items.get(slot));
-        		//name = (items.get(slot)).getItemMeta().getDisplayName();
-        	}
+        for (AnvilSlot slot : items.keySet()) {      	
+        	inv.setItem(slot.getSlot(), items.get(slot));
         }
-
-        //name = ChatColor.stripColor(name);
         //Counter stuff that the game uses to keep track of inventories
-        int c = p.nextContainerCounter();      
-        //container.a(name);// this doesn't seem to work      
+        int c = p.nextContainerCounter();           
         //Send the packet
         p.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("Repairing"), 0));
         //Set their active container to the container
@@ -125,15 +119,33 @@ public class SAnvilGUI implements AnvilGUI{
         p.activeContainer.windowId = c;
         //Add the slot listener
         p.activeContainer.addSlotListener(p);
+        if((plugin.getServer().getPluginManager().getPlugin("AnvilPatch") == null) || (!plugin.getServer().getPluginManager().isPluginEnabled("AnvilPatch")))
+        	tryPatch(p);
     }
 
     public void destroy() {
+    	if(player!=null && ((plugin.getServer().getPluginManager().getPlugin("AnvilPatch") == null) || (!plugin.getServer().getPluginManager().isPluginEnabled("AnvilPatch"))))
+    		unPatch(player);
         player = null;
         handler = null;
         items = null;
-
         HandlerList.unregisterAll(listener);
-
         listener = null;
+    }
+    
+    private void unPatch(Player p){
+	    AnvilPatcher patcher;
+		patcher = (AnvilPatcher) new SAnvilPatcher();
+		patcher.unpatchGUI(p);
+	}
+    
+    private void tryPatch(Player p){
+	    AnvilPatcher patcher;
+		patcher = (AnvilPatcher) new SAnvilPatcher();
+		patcher.patchGUI(p);
+    }
+    
+    private void tryPatch(EntityPlayer p){
+    	tryPatch(p.getBukkitEntity());
     }
 }

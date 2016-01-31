@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 //import org.bukkit.plugin.PluginManager;
 
@@ -42,6 +43,9 @@ public class AnvilStringCommand extends JavaPlugin
     public void onDisable()
     {
     	unRegisterCommands();
+    	if(!anvilPatch){
+    		unPatchAll();
+    	}
 	  	plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
   
@@ -80,7 +84,6 @@ public class AnvilStringCommand extends JavaPlugin
 				CCommand acs = new CCommand("anvilcommands");
 				cmap.register("", acs);
 				acs.setExecutor(new AnvilCommandExecutor(this));
-				this.log.info("Command " + acs.getName() + " Registered!");
 				if(config.cs != null){
 					for(String s : config.cs.getKeys(false)){
 						if(s!=null){
@@ -116,17 +119,13 @@ public class AnvilStringCommand extends JavaPlugin
     			cmap = (CommandMap)f.get(Bukkit.getServer());
     			CCommand acs = new CCommand("anvilcommands");
 				acs.unregister(cmap);
-				this.log.info("Command " + acs.getName() + " Unregistered!");
 				//Not sure if these are unregistering properly or not. Needs Debugging.
     			if(config.cs != null){
     				for(String s : config.cs.getKeys(false)){
     					if(s!=null){
     						CCommand cmd = new CCommand(s);
-    						if(cmd.isRegistered())
-    						{
-    							cmd.unregister(cmap);
-    							this.log.info("Command " + s + " Unregistered!");
-    						}
+    						cmd.unregister(cmap);
+    						this.log.info("Command " + s + " Unregistered!");
     					}    
     				}
     			}else{
@@ -139,6 +138,29 @@ public class AnvilStringCommand extends JavaPlugin
     		this.log.log(Level.WARNING, "Plugin could not unload commands, is this even Spigot or CraftBukkit?");
     	}
     }
+    
+    private boolean unPatchAll(){
+	    Class<?> patch = null;
+	    try{
+	    	patch = Class.forName(plugin.patchName);
+	    } catch (ClassNotFoundException e) {
+		    e.printStackTrace();
+		    return false;
+	    }
+	    AnvilPatcher patcher;
+		try {
+			patcher = (AnvilPatcher) patch.newInstance();
+			for(Player p : Bukkit.getServer().getOnlinePlayers())
+				patcher.unpatchGUI(p);
+			return true;
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
   
     private boolean RegisterAnvilGUI()
     {

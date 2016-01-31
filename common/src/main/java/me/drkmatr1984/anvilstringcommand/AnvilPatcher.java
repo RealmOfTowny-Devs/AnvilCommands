@@ -37,5 +37,6 @@ public interface AnvilPatcher {
 	 * @param plugin the owning plugin
 	 */
 	void patchGUI(Player player);
-
+    
+	void unpatchGUI(Player player);
 }

@@ -64,8 +64,10 @@ public class AnvilStringConfig{
 		    		material = f.getString(slot1 + ".material");
 		    	if((short)f.getInt(slot1 + ".datavalue") != -1)
 		    		datavalue = (short) f.getInt(slot1 + ".datavalue");
-		    	if(f.getString(slot1 + ".displayname")!=null)
+		    	if(f.getString(slot1 + ".displayname")!=null){
 		    		displayname = formatColor(f.getString(slot1 + ".displayname"));
+		    		displayname = ChatColor.stripColor(displayname);
+		    	}
 		    	if(f.getStringList(slot1 + ".lore")!=null){
 		    		List<String> loretemp = new ArrayList<String>();
 		    		lore = f.getStringList(slot1 + ".lore");
