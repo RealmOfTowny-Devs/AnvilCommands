@@ -2,10 +2,4 @@ name: AnvilStringCommand
 version: 0.1
 main: me.drkmatr1984.anvilstringcommand.AnvilStringCommand
 description: Opens an AnvilGUI to get String input
-softdepend: [PlaceholderAPI, AnvilPatch]
-commands:
-  anvil:
-    description: Displays the help for the plugin
-    aliases: [anvil]
-    usage: |
-        /anvil - Displays the help for the plugin
+softdepend: [AnvilPatch, PlaceholderAPI]

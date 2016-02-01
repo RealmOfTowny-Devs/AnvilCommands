@@ -70,13 +70,6 @@ config:
         command:
         - '[nothing]'
       result:
-        material: BOOK
-        datavalue: 0
-        displayname: "&eAbout this GUI"
-        lore:
-        - "&7&oEdit the Text Box in this GUI"
-        - "&7&oAnd click the result Slot"
-        - "&7&oTo Name Your &aTown"
         command:
         - 't new %userinput%'
         - '[close]'

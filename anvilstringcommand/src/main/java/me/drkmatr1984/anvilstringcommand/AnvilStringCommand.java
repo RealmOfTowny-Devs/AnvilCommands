@@ -1,3 +1,26 @@
+/**
+ * This file uses part of AnvilPatch, licensed under the MIT License (MIT).
+ *
+ * Copyright (c) Cybermaxke
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package me.drkmatr1984.anvilstringcommand;
 
 import java.util.logging.Level;
@@ -11,7 +34,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 //import org.bukkit.plugin.PluginManager;
 
@@ -79,13 +101,16 @@ public class AnvilStringCommand extends JavaPlugin
 				f.setAccessible(true);
 				cmap = (CommandMap)f.get(Bukkit.getServer());
 				CCommand acs = new CCommand("anvilcommands");
-				cmap.register("", acs);
+				cmap.register("anvilcommands", acs);
 				acs.setExecutor(new AnvilCommandExecutor(this));
+				CCommand acs1 = new CCommand("acs");
+				cmap.register("anvilcommands", acs1);
+				acs1.setExecutor(new AnvilCommandExecutor(this));
 				if(config.cs != null){
 					for(String s : config.cs.getKeys(false)){
 						if(s!=null){
 							CCommand cmd = new CCommand(s);
-							cmap.register("", cmd);
+							cmap.register("anvilcommands", cmd);
 							cmd.setExecutor(new AnvilCommandExecutor(this));
 							this.log.info("Command " + s + " Registered!");
 						}    
@@ -167,19 +192,8 @@ public class AnvilStringCommand extends JavaPlugin
     private boolean anvilPatch()
     {
     	if ((plugin.getServer().getPluginManager().getPlugin("AnvilPatch") == null) || (!plugin.getServer().getPluginManager().isPluginEnabled("AnvilPatch"))) {
-    		patchName = this.getClass().getPackage().getName() + "." + version + ".SAnvilPatcher";
-    		try {
-    			Class<?> clazz = Class.forName(patchName);
-    			if (AnvilPatcher.class.isAssignableFrom(clazz)) {
-    				System.out.println("[AnvilStringCommand] AnvilPatch not found. Using built-in code to handle colors in GUI!");
-    				return false;
-    			}
-    			this.setEnabled(false);
-    			return false;
-    		} catch (ClassNotFoundException e) {
-    			this.setEnabled(false);
-    			return false;
-    		}		  
+    		System.out.println("[AnvilStringCommand] AnvilPatch not found. Using built-in code to handle colors in GUI!");
+    		return false;	  
     	}	  
     	return true;
     }
