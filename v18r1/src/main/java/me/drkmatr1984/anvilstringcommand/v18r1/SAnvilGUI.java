@@ -21,19 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package me.drkmatr1984.anvilstringcommand.v18r2;
+package me.drkmatr1984.anvilstringcommand.v18r1;
 
-import net.minecraft.server.v1_8_R2.ChatMessage;
-import net.minecraft.server.v1_8_R2.ContainerAnvil;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.NetworkManager;
-import net.minecraft.server.v1_8_R2.PacketPlayInCustomPayload;
-import net.minecraft.server.v1_8_R2.PacketPlayOutOpenWindow;
-import net.minecraft.server.v1_8_R2.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_8_R1.ChatMessage;
+import net.minecraft.server.v1_8_R1.ContainerAnvil;
+import net.minecraft.server.v1_8_R1.EntityPlayer;
+import net.minecraft.server.v1_8_R1.NetworkManager;
+import net.minecraft.server.v1_8_R1.PacketPlayInCustomPayload;
+import net.minecraft.server.v1_8_R1.PacketPlayOutOpenWindow;
+import net.minecraft.server.v1_8_R1.PacketPlayOutSetSlot;
 import me.drkmatr1984.anvilstringcommand.util.ReflectionUtils;
-import net.minecraft.server.v1_8_R2.ItemStack;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
-import me.drkmatr1984.anvilstringcommand.v18r2.AnvilContainer;
+import me.drkmatr1984.anvilstringcommand.v18r1.AnvilContainer;
+import net.minecraft.server.v1_8_R1.ItemStack;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
 

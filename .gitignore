@@ -15,6 +15,13 @@ target
 *.iws
 dependency-reduced-pom.xml
 /target/
+/anvilstringcommand/target/
+/common/target/
+/v18r1/target/
+/v18r2/target/
+/v18r3/target/
+/v19r1/target/
+/v19r2/target/
 *.class
 .project
 .classpath

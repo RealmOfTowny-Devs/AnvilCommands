@@ -1,5 +1,5 @@
 /**
- * This file is part of AnvilPatch, licensed under the MIT License (MIT).
+ * This file uses part of AnvilPatch, licensed under the MIT License (MIT).
  *
  * Copyright (c) Cybermaxke
  *
@@ -21,20 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package me.drkmatr1984.anvilstringcommand;
+package me.drkmatr1984.anvilstringcommand.v19r1;
 
-import org.bukkit.entity.Player;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.ContainerAnvil;
+import net.minecraft.server.v1_9_R1.EntityHuman;
 
-/**
- * Fixes the item renaming of items that have a name that contains
- * color characters.
- */
-public interface AnvilPatcher {
+public class AnvilContainer extends ContainerAnvil {
+        public AnvilContainer(EntityHuman entity) {
+            super(entity.inventory, entity.world,new BlockPosition(0, 0, 0), entity);
+        }
 
-	/**
-	 * Patches the server.
-	 * 
-	 * @param plugin the owning plugin
-	 */
-	void patchGUI(Player player);
+        @Override
+        public boolean a(EntityHuman entityhuman) {
+            return true;
+        }
 }

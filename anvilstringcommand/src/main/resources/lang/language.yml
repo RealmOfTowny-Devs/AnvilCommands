@@ -1,0 +1,24 @@
+## AnvilCommands Language File ##
+General:
+  ChatPrefix: "&7[&1AnvilCommands&7]&r "
+  PluginName: 'AnvilCommands' 
+  NoPerms: "&cYou don't have Permission&r"
+  Reloaded: "&eAnvilCommands has been Reloaded!"
+  Version: "&5Version&r"
+Help:
+  Help: " Help  "
+  DisplayHelp: "- Displays this Help"
+  Version: " - Shows the Plugin Version Number"
+  Reloads: " - Reloads the Plugin Config"
+  AdminHelp: " Admin Help "
+## You can change the main Plugin Permissions here
+Permissions:
+  UserPerm: "anvilcommands.user"
+  AdminPerm: "anvilcommands.admin"
+## You can change the plugin main command and aliases(not arguments) here
+PluginCommands:
+  Main:
+    Command: "anvilcommands"
+    Aliases:
+    - "acs"
+  

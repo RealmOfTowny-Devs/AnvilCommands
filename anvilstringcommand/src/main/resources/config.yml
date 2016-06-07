@@ -1,7 +1,7 @@
-#######################   AnvilStringCommand Config   #######################
+#######################   AnvilCommands Config   #######################
 ##
 ##
-##############   Placeholders and Special AnvilStringCommand tags   #########
+##############   Placeholders and Special AnvilCommands tags   #########
 ## [close] - forces the GUI to close upon end of command list, [nothing] forces GUI to stay open
 ## ^^ One of these above must be used somewhere in the list of commands to be run by the button
 ## you are defining.
@@ -17,7 +17,9 @@
 ## Is possible to edit in the result slot. Also, keep this in mind when deciding what to name slot1
 ## And what you put in the Lore
 ## You can copy and paste the examples and edit them as you learn how to use the plugin
-## newtown:
+##     newtown:
+##       permission: anvilcommands.newtown
+##            permission to open this Anvil GUI
 ## ^^Creates a new command called /newtown, this is where you name the command for your anvilGUI. This is the only
 ## Config header you should be editing
 ##       slot1:  Define Slot1 here                  
@@ -57,8 +59,7 @@ config:
         lore:
         - '&7&oClick on the Result'
         - '&7&oSlot when done Naming'
-        command:
-        - '[nothing]'
+        command: []
       slot2:
         material: BOOK
         datavalue: 0
@@ -67,12 +68,10 @@ config:
         - "&7&oEdit the Text Box in this GUI"
         - "&7&oAnd click the result Slot"
         - "&7&oTo Name Your &aTown"
-        command:
-        - '[nothing]'
+        command: []
       result:
         command:
         - 't new %userinput%'
-        - '[close]'
     renameme:
       ## Creates a new command called /renameme
       permission: anvilcommands.renameme
@@ -84,8 +83,7 @@ config:
         lore:
         - '&7&oEnter your new'
         - '&7&oNickName'
-        command:
-        - '[nothing]'
+        command: []
       slot2:
         material: PAPER
         datavalue: 0
@@ -93,10 +91,8 @@ config:
         lore:
         - "&7&oClick Any of these buttons"
         - "&7&oWhen Done. Press Esc to close"
-        command:
-        - '[nothing]'
+        command: []
       result:
         command:
         - "!nick %userinput%"
         ## Executes as the player as OP
-        - '[close]'

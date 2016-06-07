@@ -21,20 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package me.drkmatr1984.anvilstringcommand.v18r2;
+package me.drkmatr1984.anvilstringcommand.v19r2;
 
-import net.minecraft.server.v1_8_R2.ChatMessage;
-import net.minecraft.server.v1_8_R2.ContainerAnvil;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.NetworkManager;
-import net.minecraft.server.v1_8_R2.PacketPlayInCustomPayload;
-import net.minecraft.server.v1_8_R2.PacketPlayOutOpenWindow;
-import net.minecraft.server.v1_8_R2.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_9_R2.ChatMessage;
+import net.minecraft.server.v1_9_R2.ContainerAnvil;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.NetworkManager;
+import net.minecraft.server.v1_9_R2.PacketDataSerializer;
+import net.minecraft.server.v1_9_R2.PacketPlayInCustomPayload;
+import net.minecraft.server.v1_9_R2.PacketPlayOutOpenWindow;
+import net.minecraft.server.v1_9_R2.PacketPlayOutSetSlot;
 import me.drkmatr1984.anvilstringcommand.util.ReflectionUtils;
-import net.minecraft.server.v1_8_R2.ItemStack;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
-import me.drkmatr1984.anvilstringcommand.v18r2.AnvilContainer;
+import me.drkmatr1984.anvilstringcommand.v19r2.AnvilContainer;
+import net.minecraft.server.v1_9_R2.ItemStack;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
 import io.netty.channel.Channel;
@@ -64,7 +67,6 @@ import java.util.HashMap;
  */
 public class SAnvilGUI implements AnvilGUI, Listener{
     private Player player;
-    private AnvilClickEventHandler handler;
     private HashMap<AnvilSlot, org.bukkit.inventory.ItemStack> items = new HashMap<AnvilSlot, org.bukkit.inventory.ItemStack>();
     private Inventory inv;
     private Listener listener;
@@ -72,13 +74,12 @@ public class SAnvilGUI implements AnvilGUI, Listener{
     
     public SAnvilGUI(Player player, JavaPlugin plugin, final AnvilClickEventHandler handler) {
         this.player = player;
-        this.handler = handler;
         this.plugin = plugin;
         this.listener = new Listener() {
             @EventHandler
             public void onInventoryClick(InventoryClickEvent event) {
                 if (event.getWhoClicked() instanceof Player) {
-                    Player clicker = (Player) event.getWhoClicked();
+                    event.getWhoClicked();
                     if (event.getInventory().equals(inv)) {
                         event.setCancelled(true);
                         org.bukkit.inventory.ItemStack item = event.getCurrentItem();
@@ -107,7 +108,7 @@ public class SAnvilGUI implements AnvilGUI, Listener{
             @EventHandler
             public void onInventoryClose(InventoryCloseEvent event) {
                 if (event.getPlayer() instanceof Player) {
-                    Player player = (Player) event.getPlayer();
+                    event.getPlayer();
                     Inventory inv = event.getInventory();
                     if (inv.equals(SAnvilGUI.this.inv)) {
                         inv.clear();
@@ -161,7 +162,6 @@ public class SAnvilGUI implements AnvilGUI, Listener{
 
     public void destroy() {
         player = null;
-        handler = null;
         items = null;
         HandlerList.unregisterAll(listener);
         listener = null;
@@ -234,7 +234,9 @@ public class SAnvilGUI implements AnvilGUI, Listener{
 			pipe.remove("anvilpatch");
 		}
 	}
-
+	
+	private static Method readStringMethod;
+	
 	public String findHandler(ChannelPipeline pipe) {
 		// This should normally be good enough
 		if (pipe.get("packet_handler") != null) {
@@ -291,7 +293,29 @@ public class SAnvilGUI implements AnvilGUI, Listener{
 				container = (ContainerAnvil) this.playerHandle.activeContainer;
 				String value = "";
 				if (msg.b() != null && msg.b().readableBytes() >= 1) {
-					value = msg.b().c(Short.MAX_VALUE);
+					if (readStringMethod == null) {
+						try {
+							Method method = PacketDataSerializer.class.getMethod("c", int.class);
+							if (method.getReturnType().equals(String.class)) {
+								readStringMethod = method;
+							}
+						} catch (NoSuchMethodException e) {
+						} catch (SecurityException e) {
+							throw new RuntimeException(e);
+						}
+						if (readStringMethod == null) {
+							try {
+								readStringMethod = PacketDataSerializer.class.getMethod("e", int.class);
+							} catch (Exception e) {
+								throw new RuntimeException(e);
+							}
+						}
+					}
+					try {
+						value = (String) readStringMethod.invoke(msg.b(), Short.MAX_VALUE);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
 					StringBuilder builder = new StringBuilder();
 					for (char c : value.toCharArray()) {
 						if (c >= ' ' && c != '\u0000') {

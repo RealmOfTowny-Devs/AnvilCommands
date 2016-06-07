@@ -21,7 +21,6 @@ public class AnvilStringConfig{
 	File file;
 	FileConfiguration f;
 	ConfigurationSection cs;
-	
 	public AnvilStringConfig(AnvilStringCommand anvilStringCommand) {
 		this.plugin = anvilStringCommand; 
 	}
@@ -126,10 +125,15 @@ public class AnvilStringConfig{
 	public String formatColor(String words)
 	{
 		String temp = "";
-		if(words.contains("&")){
+		if(!(words.equals(null)) && (!words.equals(""))){
+		    if(words.contains("&")){
 			temp = ChatColor.translateAlternateColorCodes('&', words);
+			return temp;
+		    }
+		}else{
+			return "";
 		}
-		return temp;	
+		return words;	
 	}
 	
 	public ItemStack assembleButton(Material mat, short dv, String name, List<String> lore){

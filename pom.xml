@@ -22,8 +22,11 @@
       <!-- <module>v18r1</module> -->
       <module>common</module>
       <module>anvilstringcommand</module>
+      <module>v19r2</module>
+      <module>v19r1</module>      
       <module>v18r3</module>
       <module>v18r2</module>
+      <module>v18r1</module>
     </modules>
     
     <!-- Repositories -->

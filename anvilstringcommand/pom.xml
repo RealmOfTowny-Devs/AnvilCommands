@@ -5,7 +5,7 @@
     <artifactId>anvilstringcommand</artifactId>
     <packaging>jar</packaging>
     <name>anvilstringcommand</name>
-    <version>0.1</version>
+    <version>0.14</version>
     <!-- This is where I track the version -->
 
     <repositories>
@@ -16,38 +16,14 @@
     </repositories>
 
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>me.drkmatr1984</groupId>
-            <artifactId>anvilstringcommand-v1_7_R3</artifactId>
-            <version>v1_7_R3</version>
+            <artifactId>anvilstringcommand-v18r1</artifactId>
+            <version>v18r1</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>me.drkmatr1984</groupId>
-            <artifactId>anvilstringcommand-v1_7_R4</artifactId>
-            <version>v1_7_R4</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>me.drkmatr1984</groupId>
-            <artifactId>anvilstringcommand-v1_8_R1</artifactId>
-            <version>v1_8_R1</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>me.drkmatr1984</groupId>
-            <artifactId>anvilstringcommand-v1_8_R2</artifactId>
-            <version>v1_8_R2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>-->
         <dependency>
             <groupId>me.drkmatr1984</groupId>
             <artifactId>anvilstringcommand-v18r2</artifactId>
@@ -60,6 +36,22 @@
             <groupId>me.drkmatr1984</groupId>
             <artifactId>anvilstringcommand-v18r3</artifactId>
             <version>v18r3</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>me.drkmatr1984</groupId>
+            <artifactId>anvilstringcommand-v19r1</artifactId>
+            <version>v19r1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>me.drkmatr1984</groupId>
+            <artifactId>anvilstringcommand-v19r2</artifactId>
+            <version>v19r2</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
@@ -84,7 +76,7 @@
 
     <build>
         <directory>../target</directory>
-        <finalName>anvilstringcommand</finalName>
+        <finalName>AnvilCommands</finalName>
         <!-- Define filtering for the inclusion of plugin.yml, so we can utilize the pom.xml version in it -->
         <resources>
             <resource>
@@ -94,6 +86,14 @@
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
+                    <include>src/main/resources/lang</include>
+                </includes>
+            </resource>
+            <resource>
+                <targetPath>lang</targetPath>
+                <directory>src/main/resources/lang</directory>
+                <includes>
+                    <include>language.yml</include>
                 </includes>
             </resource>
         </resources>
@@ -108,6 +108,18 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.drkmatr1984:anvilstringcommand-v19r2</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-v19r1</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-v18r3</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-v18r2</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-v18r1</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-common</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -24,6 +24,7 @@
 package me.drkmatr1984.anvilstringcommand.v18r3;
 
 import net.minecraft.server.v1_8_R3.ChatMessage;
+import net.minecraft.server.v1_8_R3.ContainerAnvil;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.NetworkManager;
 import net.minecraft.server.v1_8_R3.PacketPlayInCustomPayload;
@@ -95,6 +96,7 @@ public class SAnvilGUI implements AnvilGUI, Listener{
                         handler.onAnvilClick(clickEvent);
                         if (clickEvent.getWillClose()) {
                             event.getWhoClicked().closeInventory();
+                            destroy();
                         }
                         if (clickEvent.getWillDestroy()) {
                             destroy();
@@ -283,44 +285,48 @@ public class SAnvilGUI implements AnvilGUI, Listener{
 		}
 
 		public void handleItemRename(PacketPlayInCustomPayload msg) {
-			AnvilContainer container = (AnvilContainer) this.playerHandle.activeContainer;						
-			String value = "";
-			if (msg.b() != null && msg.b().readableBytes() >= 1) {
-				value = msg.b().c(Short.MAX_VALUE);
-				StringBuilder builder = new StringBuilder();
-				for (char c : value.toCharArray()) {
-					if (c >= ' ' && c != '\u0000') {
-						builder.append(c);
-					}
-				}
-				value = ChatColor.translateAlternateColorCodes('&', builder.toString());
-				if (value.length() <= 30) {
-					container.a(value); //What was here
-					ItemStack itemStack0 = container.getSlot(0).getItem();
-					ItemStack itemStack1 = container.getSlot(1).getItem();
-					ItemStack itemStack2 = container.getSlot(2).getItem();
-					if (itemStack0 != null) {
-						if (StringUtils.isEmpty(value)) {    //if nothing is typed this sets the result to the
-							if (itemStack0.hasName()) {      //name of the item in slot1
-								if(itemStack2 != null)								
-									itemStack2.r();
-								}
-						} else if (!value.equals(itemStack0.getName())) {
-							if (itemStack2 == null) {
-								itemStack2 = itemStack0.cloneItemStack();
-								container.getSlot(2).set(itemStack2);
-							}
-							itemStack2.c(value);
-						} else if (itemStack1 == null || itemStack1.getItem() == null) {
-							PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(container.windowId, 2, null);
-							this.playerHandle.playerConnection.sendPacket(packet);
-							container.getSlot(2).set(null);
+			ContainerAnvil container;
+			if(this.playerHandle.activeContainer instanceof AnvilContainer)
+			{
+				container = (ContainerAnvil) this.playerHandle.activeContainer;
+				String value = "";
+				if (msg.b() != null && msg.b().readableBytes() >= 1) {
+					value = msg.b().c(Short.MAX_VALUE);
+					StringBuilder builder = new StringBuilder();
+					for (char c : value.toCharArray()) {
+						if (c >= ' ' && c != '\u0000') {
+							builder.append(c);
 						}
 					}
+					value = ChatColor.translateAlternateColorCodes('&', builder.toString());
+					if (value.length() <= 30) {
+						container.a(value); //What was here
+						ItemStack itemStack0 = container.getSlot(0).getItem();
+						ItemStack itemStack1 = container.getSlot(1).getItem();
+						ItemStack itemStack2 = container.getSlot(2).getItem();
+						if (itemStack0 != null) {
+							if (StringUtils.isEmpty(value)) {    //if nothing is typed this sets the result to the
+								if (itemStack0.hasName()) {      //name of the item in slot1
+									if(itemStack2 != null)								
+										itemStack2.r();
+									}
+							} else if (!value.equals(itemStack0.getName())) {
+								if (itemStack2 == null) {
+									itemStack2 = itemStack0.cloneItemStack();
+									container.getSlot(2).set(itemStack2);
+								}
+								itemStack2.c(value);
+							} else if (itemStack1 == null || itemStack1.getItem() == null) {
+								PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(container.windowId, 2, null);
+								this.playerHandle.playerConnection.sendPacket(packet);
+								container.getSlot(2).set(null);
+							}
+						}
+					}
+				} else {
+					container.a("");
 				}
-			} else {
-				container.a("");
-			}
+			} 									
 		}
 	}
 }
