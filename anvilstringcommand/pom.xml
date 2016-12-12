@@ -58,6 +58,22 @@
         </dependency>
         <dependency>
             <groupId>me.drkmatr1984</groupId>
+            <artifactId>anvilstringcommand-v110r1</artifactId>
+            <version>v110r1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>me.drkmatr1984</groupId>
+            <artifactId>anvilstringcommand-v111r1</artifactId>
+            <version>v111r1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>me.drkmatr1984</groupId>
             <artifactId>anvilstringcommand-common</artifactId>
             <version>0.1</version>
             <type>jar</type>
@@ -111,6 +127,8 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
+                                    <include>me.drkmatr1984:anvilstringcommand-v111r1</include>
+                                    <include>me.drkmatr1984:anvilstringcommand-v110r1</include>
                                     <include>me.drkmatr1984:anvilstringcommand-v19r2</include>
                                     <include>me.drkmatr1984:anvilstringcommand-v19r1</include>
                                     <include>me.drkmatr1984:anvilstringcommand-v18r3</include>
