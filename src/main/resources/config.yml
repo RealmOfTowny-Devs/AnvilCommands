@@ -1,0 +1,50 @@
+#######################   AnvilCommands Config   #######################
+##
+##
+##############   Placeholders and Special AnvilCommands tags   #########
+## [close] - forces the GUI to close upon end of command list, [nothing] forces GUI to stay open
+## ^^ One of these above must be used somewhere in the list of commands to be run by the button
+## you are defining.
+## Use %userinput% to input whatever the player has typed into the GUI text box When Executing a Command
+## Use %player% to input the Player's Name When Executing a Command
+## Prefix a Command with ! to run the command as the player with OP
+## Prefix a Command with ~ To run the command as the console
+#############################################################################
+## config:
+##   commands:
+## Below Here is Where you Define your commands and how each slot will appear and Function
+## The Result Always inherits the Lore and Displayname of the Item in Slot1, Therefore, only command
+## Is possible to edit in the result slot. Also, keep this in mind when deciding what to name slot1
+## And what you put in the Lore
+## You can copy and paste the examples and edit them as you learn how to use the plugin
+##     newtown:
+##       ^^Creates a new command called /newtown, this is where you name the command for your anvilGUI. This is the only
+##         Config header you should be editing
+##       permission: anvilcommands.newtown
+##            permission to open this Anvil GUI
+##       prompt: "Town Name :"
+##            ##The text for the item in Slot1 and the default text in the textbox
+##       result:
+##         command:
+##         - 't new %userinput%'
+##         - 't deposit 1000'  
+#################################################################################
+config:
+  commands:
+    newtown:
+      ##Creates a new command called /newtown
+      permission: anvilcommands.newtown
+      ##permission to open this Anvil GUI
+      prompt: "Town Name :"
+      result:
+        command:
+        - 't new %userinput%'
+    renameme:
+      ## Creates a new command called /renameme
+      permission: anvilcommands.renameme
+      ##permission to open this Anvil GUI
+      prompt: "NickName :"
+      result:
+        command:
+        - "!nick %userinput%"
+        ## Executes as the player as OP

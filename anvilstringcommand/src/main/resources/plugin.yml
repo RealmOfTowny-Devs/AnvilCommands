@@ -1,5 +1,0 @@
-name: AnvilCommands
-version: 0.14
-main: me.drkmatr1984.anvilstringcommand.AnvilStringCommand
-description: Opens an AnvilGUI to get String input
-softdepend: [AnvilPatch, PlaceholderAPI]

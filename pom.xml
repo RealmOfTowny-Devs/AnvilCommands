@@ -1,36 +1,20 @@
-<!-- AnvilStringCommand build file -->
+<!-- AnvilCommands build file -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.drkmatr1984</groupId>
-    <artifactId>anvilstringcommand-parent</artifactId>
-    <!-- Artifact ID doesn't matter for anything but the final product
-               At least, it doesn't matter externally to this setup -->
-    <packaging>pom</packaging>
-    <!-- Packaging? POM -->
-    <version>parent</version>
-    <name>anvilstringcommand Parent</name>
+    <artifactId>AnvilCommands</artifactId>
+    <version>0.11</version>
+    <name>AnvilCommands</name>
 
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.number>Unknown</build.number>
     </properties>
-    
-    <modules>
-      <!-- <module>v18r1</module> -->
-      <module>common</module>
-      <module>anvilstringcommand</module>
-      <module>v111r1</module>
-      <module>v110r1</module>
-      <module>v19r2</module>
-      <module>v19r1</module>      
-      <module>v18r3</module>
-      <module>v18r2</module>
-      <module>v18r1</module>
-    </modules>
-    
+
     <!-- Repositories -->
     <repositories>
         <repository>
@@ -38,8 +22,69 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-			<id>md_5-repo</id>
-			<url>http://repo.md-5.net/content/groups/public/</url>
+			   <id>md_5-repo</id>
+			   <url>http://repo.md-5.net/content/groups/public/</url>
 		  </repository>
+		  <repository>
+            <id>wesjd-repo</id>
+            <url>http://nexus.wesjd.net/repository/thirdparty/</url>
+        </repository>
     </repositories>
+    <!-- Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.11-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.11-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.wesjd</groupId>
+            <artifactId>anvilgui</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+        </dependency>        
+    </dependencies>
+
+    <!-- Build information -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>net.wesjd:anvilgui</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
