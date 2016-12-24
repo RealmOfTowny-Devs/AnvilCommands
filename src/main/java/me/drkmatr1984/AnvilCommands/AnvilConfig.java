@@ -7,10 +7,6 @@ import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.ChatColor;
 
 public class AnvilConfig{
 	
@@ -41,7 +37,7 @@ public class AnvilConfig{
 		f = YamlConfiguration.loadConfiguration(file);		
 		cs = f.getConfigurationSection("config.commands");
 		String permission = "anvilcommands.default";
-		String displayname = "&6Apple";
+		Types types = Types.ANVIL;
 		String prompts = "";
 		List<String> commands = new ArrayList<String>();
 		HashMap<String, Anvils> buttonSlots = new HashMap<String, Anvils>();
@@ -51,6 +47,11 @@ public class AnvilConfig{
 		    	String perm = "config.commands." + s + ".permission";
 		    	if(f.getString(perm)!=null)
 		    		permission = f.getString(perm);
+		    	//Type of GUI (Anvil, Sign, CommandBlock)
+		    	String type = "config.commands." + s + ".type";
+		    	if(f.getString(type)!=null){
+		    		types = Types.valueOf(f.getString(type));
+		    	}
 		    	//prompt
 		    	String prompt = "config.commands." + s + ".prompt";
 		    	if(f.getString(prompt)!=null){
@@ -60,7 +61,7 @@ public class AnvilConfig{
 		    	String result = "config.commands." + s + ".result";
 		    	if(f.getStringList(result + ".command")!=null)
 		    		commands = f.getStringList(result + ".command");
-		    	Anvils buttonInfo = new Anvils(permission, prompts, displayname, commands); 
+		    	Anvils buttonInfo = new Anvils(permission, types, prompts, commands); 
 		    	buttonSlots.put(s, buttonInfo);
 		    	return buttonSlots;
 		    }
@@ -68,40 +69,17 @@ public class AnvilConfig{
 		return null;
 	}
 	
-	public String formatColor(String words)
-	{
-		String temp = "";
-		if(!(words.equals(null)) && (!words.equals(""))){
-		    if(words.contains("&")){
-			temp = ChatColor.translateAlternateColorCodes('&', words);
-			return temp;
-		    }
-		}else{
-			return "";
-		}
-		return words;	
-	}
-	
-	public ItemStack assembleButton(Material mat, short dv, String name, List<String> lore){
-		ItemStack item = new ItemStack(mat, 1, dv);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(name);
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		return item;
-	}
-	
 	public class Anvils {
 		private String permission;
+		private Types type;
 		private String prompt;
-		private String displayName;
 		private List<String> commands;
 		
-		public Anvils(String permission, String prompt, String displayName, List<String> commands){
+		public Anvils(String permission, Types type, String prompt, List<String> commands){
 			super();
 			this.permission = permission;
+			this.type = type;
 			this.prompt = prompt;
-			this.displayName = displayName;
 			this.commands = commands;
 		}
 		
@@ -113,20 +91,20 @@ public class AnvilConfig{
 			this.permission = permission;
 		}
 		
+		public Types getType(){
+			return type;
+		}
+		
+		public void setType(Types type){
+			this.type = type;
+		}
+		
 		public String getPrompt(){
 			return prompt;
 		}
 		
 		public void setPrompt(String prompt){
 			this.prompt = prompt;
-		}
-		
-		public String getdisplayName(){
-			return displayName;
-		}
-		
-		public void setdisplayName(String displayName){
-			this.displayName = displayName;
 		}
 		
 		public List<String> getCommands(){
@@ -137,5 +115,10 @@ public class AnvilConfig{
 			this.commands = commands;
 		}
 		
+	}
+	
+	public static enum Types {
+		ANVIL,
+		SIGN;
 	}
 }

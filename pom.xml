@@ -6,7 +6,7 @@
 
     <groupId>me.drkmatr1984</groupId>
     <artifactId>AnvilCommands</artifactId>
-    <version>0.11</version>
+    <version>0.15</version>
     <name>AnvilCommands</name>
 
     <!-- Properties -->
@@ -22,12 +22,20 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-			   <id>md_5-repo</id>
-			   <url>http://repo.md-5.net/content/groups/public/</url>
-		  </repository>
-		  <repository>
+		    <id>md_5-repo</id>
+			<url>http://repo.md-5.net/content/groups/public/</url>
+		</repository>
+		<repository>
             <id>wesjd-repo</id>
             <url>http://nexus.wesjd.net/repository/thirdparty/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>http://repo.dmulloy2.net/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>repo</id>
+            <url>http://minevolt.net/repo/</url>
         </repository>
     </repositories>
     <!-- Dependencies -->
@@ -35,6 +43,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
+            <version>1.11-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
             <version>1.11-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
@@ -50,7 +65,12 @@
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>1.1.1-SNAPSHOT</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib-API</artifactId>
+            <version>4.2.0-SNAPSHOT</version>
+        </dependency>      
     </dependencies>
 
     <!-- Build information -->

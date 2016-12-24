@@ -8,7 +8,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import me.drkmatr1984.AnvilCommands.AnvilConfig.Anvils;
+import me.drkmatr1984.AnvilCommands.AnvilConfig.Types;
+import me.drkmatr1984.AnvilCommands.handlers.SignInputHandler;
+import me.drkmatr1984.AnvilCommands.listeners.SignGUICloseListener;
 import me.drkmatr1984.AnvilCommands.tasks.CommandTask;
 import net.wesjd.anvilgui.AnvilGUI;
 
@@ -18,18 +23,19 @@ public class AnvilCommandExecutor
   final String variable = "%userinput%";
   final String userVariable = "%player%";
   
-  AnvilCommands plugin;
+  private static AnvilCommands plugin;
   AnvilConfig cfg;
   AnvilLang lang;
   
   public AnvilCommandExecutor(AnvilCommands anvilStringCommand) {
-    this.plugin = anvilStringCommand;
-    this.lang = this.plugin.lang;
+    AnvilCommandExecutor.plugin = anvilStringCommand;
+    this.lang = AnvilCommandExecutor.plugin.lang;
     this.lang.InitializeLang();
-    this.cfg = this.plugin.config;
+    this.cfg = AnvilCommandExecutor.plugin.config;
   }
   
-  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+  @SuppressWarnings("deprecation")
+public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
   {
 	Player p;
     try {
@@ -56,14 +62,30 @@ public class AnvilCommandExecutor
             if (!thisList.getPermission().equals(null)) {
               if ((p.hasPermission(thisList.getPermission())) || (p.hasPermission("anvilcommands.admin"))) {
             	  final Player pl = p;
-            	  new AnvilGUI(this.plugin, pl, thisList.getPrompt(), (player, reply) -> {
-            		    if (!reply.equals(null)) {
-            		    	List<String> commandList = thisList.getCommands();
-            		    	doCommands(pl, reply, commandList);
-            		        return null;
-            		    }
-            		    return "&4Canceled";
-            	  });
+            	  Types type = thisList.getType();
+            	  List<String> commandList = thisList.getCommands();
+            	  if(type == Types.ANVIL){
+            		  new AnvilGUI(AnvilCommandExecutor.plugin, pl, thisList.getPrompt(), (player, reply) -> {
+            			  if (!reply.equals(null)) {          				  
+            				  doCommands(pl, reply, commandList);
+            				  return null;
+            			  }
+              		      return "&4Canceled";
+            		  });
+            	  }
+            	  if(type == Types.SIGN){
+            		  p.sendMessage(ChatColor.translateAlternateColorCodes('&', thisList.getPrompt()));
+            		  Bukkit.getServer().getScheduler().runTaskLater(AnvilCommandExecutor.plugin, new BukkitRunnable(){
+						@Override
+						public void run() {
+							HashMap<Player, List<String>> config = SignGUICloseListener.getConfig();
+		            		config.put(pl, commandList);
+		            		SignGUICloseListener.setConfig(config);
+		            		SignInputHandler.openSignGUI(pl);
+						}            			  
+            		  }, 70L);
+            		              		  
+            	  }
               } else {
                 p.sendMessage(this.lang.PLPrefix + this.lang.NoPerms);
               }
@@ -79,7 +101,7 @@ public class AnvilCommandExecutor
     return false;
   }
   
-  public void doCommands(Player p, String inputString, List<String> commandList)
+  public static void doCommands(Player p, String inputString, List<String> commandList)
   {
 	Long delay = 10L;	
     for (String com : commandList) {
@@ -144,21 +166,21 @@ public class AnvilCommandExecutor
           sender.sendMessage(this.lang.PLPrefix + this.lang.NoPerms);
           return true;
         }
-        this.plugin.getPluginLoader().disablePlugin(this.plugin);
-        this.plugin.getPluginLoader().enablePlugin(this.plugin);
+        AnvilCommandExecutor.plugin.getPluginLoader().disablePlugin(AnvilCommandExecutor.plugin);
+        AnvilCommandExecutor.plugin.getPluginLoader().enablePlugin(AnvilCommandExecutor.plugin);
         sender.sendMessage(this.lang.PLPrefix + this.lang.Reloaded);
         return true;
       }
       if (arg.equalsIgnoreCase("version")) {
         if (!(sender instanceof Player)) {
-          Bukkit.getServer().getConsoleSender().sendMessage(this.lang.PLPrefix + ChatColor.LIGHT_PURPLE + this.lang.Version + ChatColor.GRAY + ": " + ChatColor.RESET + this.plugin.getDescription().getVersion());
+          Bukkit.getServer().getConsoleSender().sendMessage(this.lang.PLPrefix + ChatColor.LIGHT_PURPLE + this.lang.Version + ChatColor.GRAY + ": " + ChatColor.RESET + AnvilCommandExecutor.plugin.getDescription().getVersion());
           return true;
         }
         if (!sender.hasPermission(this.lang.AdminPerm)) {
           sender.sendMessage(this.lang.PLPrefix + this.lang.NoPerms);
           return true;
         }
-        sender.sendMessage(this.lang.PLPrefix + ChatColor.LIGHT_PURPLE + this.lang.Version + ChatColor.GRAY + ": " + ChatColor.RESET + this.plugin.getDescription().getVersion());
+        sender.sendMessage(this.lang.PLPrefix + ChatColor.LIGHT_PURPLE + this.lang.Version + ChatColor.GRAY + ": " + ChatColor.RESET + AnvilCommandExecutor.plugin.getDescription().getVersion());
         return true;
       }
     }

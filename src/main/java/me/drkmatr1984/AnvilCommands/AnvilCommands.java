@@ -4,12 +4,15 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.drkmatr1984.AnvilCommands.listeners.SignGUICloseListener;
 
 public class AnvilCommands
   extends JavaPlugin
@@ -19,7 +22,6 @@ public class AnvilCommands
   public AnvilConfig config;
   public AnvilLang lang;
   private Logger log = getLogger();
-  
   private static CommandMap cmap;
   
   public String version;
@@ -35,6 +37,7 @@ public class AnvilCommands
     this.config.saveDefaultConfig();
     this.config.loadConfig();
     RegisterCommands();
+    Bukkit.getServer().getPluginManager().registerEvents(new SignGUICloseListener(plugin), plugin);
     this.anvilPatch = anvilPatch();
     this.log.info("AnvilCommands enabled!");
   }

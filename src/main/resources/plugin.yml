@@ -1,5 +1,5 @@
 name: AnvilCommands
-version: 0.1
+version: 0.15
 main: me.drkmatr1984.AnvilCommands.AnvilCommands
 description: Opens an AnvilGUI to get String input
-softdepend: [AnvilPatch, PlaceholderAPI]
+softdepend: [ProtocolLib]
